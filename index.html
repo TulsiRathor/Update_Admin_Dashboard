@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Freelance Platform</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f3f4f6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+            padding: 24px;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            color: #1f2937;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar h2 i {
+            color: #4f46e5;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 8px;
+            color: #6b7280;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .nav-item.active {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            font-size: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .admin-profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #4f46e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Stats Boxes */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-header i {
+            font-size: 28px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .high-demand i {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .low-demand i {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .badge.high {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge.low {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 32px 0 20px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: #1f2937;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 24px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 20px;
+            background: #f9fafb;
+            font-weight: 600;
+            font-size: 14px;
+            color: #4b5563;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #1f2937;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f9fafb;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .badge-role {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            width: fit-content;
+        }
+
+        .badge-client {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-freelancer {
+            background: #f3e8ff;
+            color: #9333ea;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .skill-tag {
+            background: #f3f4f6;
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 11px;
+            color: #4b5563;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        .btn-view {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-view i {
+            font-size: 12px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            color: #1f2937;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .profile-detail-item {
+            display: flex;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .profile-detail-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            width: 100px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #1f2937;
+        }
+
+        .stats-mini {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .stat-mini-item {
+            background: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-mini-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .stat-mini-label {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 16px;
+            }
+            .sidebar h2 span, .nav-item span {
+                display: none;
+            }
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>
+            <i class="fas fa-bolt"></i>
+            <span>FreelanceHub</span>
+        </h2>
+        
+        <div class="nav-item active">
+            <i class="fas fa-dashboard"></i>
+            <span>Dashboard</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-briefcase"></i>
+            <span>Projects</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-file-alt"></i>
+            <span>Proposals</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-gear"></i>
+            <span>Settings</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <div class="admin-profile">
+                <i class="fas fa-user-circle" style="font-size: 24px; color: #4f46e5;"></i>
+                <span>Admin User</span>
+                <i class="fas fa-chevron-down" style="font-size: 12px; color: #9ca3af;"></i>
+            </div>
+        </div>
+
+        <!-- Stats Boxes -->
+        <div class="stats-grid">
+            <!-- High Demand Card -->
+            <div class="stat-card high-demand" onclick="showHighDemand()">
+                <div class="stat-header">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="badge high">Trending ↑</span>
+                </div>
+                <div class="stat-value" id="highDemandCount">8</div>
+                <div class="stat-label">
+                    <i class="fas fa-fire" style="color: #ef4444;"></i>
+                    High-demand clients
+                    <span style="color: #9ca3af; margin-left: auto;">Avg 15+ proposals</span>
+                </div>
+            </div>
+
+            <!-- Low Demand Card -->
+            <div class="stat-card low-demand" onclick="showLowDemand()">
+                <div class="stat-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <span class="badge low">Low ↓</span>
+                </div>
+                <div class="stat-value" id="lowDemandCount">12</div>
+                <div class="stat-label">
+                    <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
+                    Low-demand clients
+                    <span style="color: #9ca3af; margin-left: auto;">0-2 proposals</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unverified Users Section -->
+        <div class="section-header">
+            <h2><i class="fas fa-user-clock" style="margin-right: 8px; color: #4f46e5;"></i>Pending Verification</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterUsers('all')">All</button>
+                <button class="filter-btn" onclick="filterUsers('client')">Clients</button>
+                <button class="filter-btn" onclick="filterUsers('freelancer')">Freelancers</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="unverifiedTable">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Skills</th>
+                        <th>Hourly Rate</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Demand Clients Section -->
+        <div class="section-header" style="margin-top: 48px;">
+            <h2><i class="fas fa-chart-pie" style="margin-right: 8px; color: #4f46e5;"></i>Client Demand Overview</h2>
+        </div>
+
+        <div class="table-container">
+            <table id="demandTable">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Projects Posted</th>
+                        <th>Proposals Received</th>
+                        <th>Demand Status</th>
+                        <th>Avg. Budget</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>User Profile</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Data for Unverified Users
+        const unverifiedUsers = [
+            {
+                id: 1,
+                name: "Sarah Johnson",
+                email: "sarah.j@email.com",
+                role: "client",
+                skills: ["Project Management", "Product Design"],
+                hourlyRate: "$45-65",
+                availability: "Full-time",
+                initials: "SJ"
+            },
+            {
+                id: 2,
+                name: "Mike Chen",
+                email: "mike.chen@email.com",
+                role: "freelancer",
+                skills: ["React", "Node.js", "Python"],
+                hourlyRate: "$55",
+                availability: "Part-time",
+                initials: "MC"
+            },
+            {
+                id: 3,
+                name: "Emily Rodriguez",
+                email: "emily.r@email.com",
+                role: "client",
+                skills: ["Marketing", "Content Strategy"],
+                hourlyRate: "$35-50",
+                availability: "Project-based",
+                initials: "ER"
+            },
+            {
+                id: 4,
+                name: "Alex Thompson",
+                email: "alex.t@email.com",
+                role: "freelancer",
+                skills: ["UI/UX Design", "Figma", "Adobe XD"],
+                hourlyRate: "$50",
+                availability: "Full-time",
+                initials: "AT"
+            }
+        ];
+
+        // Sample Data for Demand Clients
+        const demandClients = [
+            {
+                id: 101,
+                name: "TechStart Inc",
+                projectsPosted: 5,
+                proposalsReceived: 23,
+                demandStatus: "high",
+                avgBudget: "$5,000-8,000",
+                initials: "TI"
+            },
+            {
+                id: 102,
+                name: "Creative Agency",
+                projectsPosted: 3,
+                proposalsReceived: 15,
+                demandStatus: "high",
+                avgBudget: "$3,500-6,000",
+                initials: "CA"
+            },
+            {
+                id: 103,
+                name: "Local Business Co",
+                projectsPosted: 1,
+                proposalsReceived: 2,
+                demandStatus: "low",
+                avgBudget: "$1,200",
+                initials: "LB"
+            },
+            {
+                id: 104,
+                name: "Startup Venture",
+                projectsPosted: 2,
+                proposalsReceived: 4,
+                demandStatus: "low",
+                avgBudget: "$2,500-4,000",
+                initials: "SV"
+            },
+            {
+                id: 105,
+                name: "Enterprise Corp",
+                projectsPosted: 8,
+                proposalsReceived: 31,
+                demandStatus: "high",
+                avgBudget: "$10,000-15,000",
+                initials: "EC"
+            },
+            {
+                id: 106,
+                name: "New Business",
+                projectsPosted: 1,
+                proposalsReceived: 0,
+                demandStatus: "low",
+                avgBudget: "$800-1,500",
+                initials: "NB"
+            }
+        ];
+
+        // Update stat counts
+        document.getElementById('highDemandCount').textContent = demandClients.filter(c => c.demandStatus === 'high').length;
+        document.getElementById('lowDemandCount').textContent = demandClients.filter(c => c.demandStatus === 'low').length;
+
+        // Render Unverified Users Table
+        function renderUnverifiedUsers(filterRole = 'all') {
+            const tbody = document.querySelector('#unverifiedTable tbody');
+            tbody.innerHTML = '';
+
+            const filteredUsers = filterRole === 'all' 
+                ? unverifiedUsers 
+                : unverifiedUsers.filter(u => u.role === filterRole);
+
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="user-info" onclick="viewProfile(${user.id})" style="cursor: pointer;">
+                            <div class="user-avatar">${user.initials}</div>
+                            <div class="user-details">
+                                <span class="user-name">${user.name}</span>
+                                <span class="user-email">${user.email}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge-role ${user.role === 'client' ? 'badge-client' : 'badge-freelancer'}">
+                            ${user.role === 'client' ? 'Client' : 'Freelancer'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="skills">
+                            ${user.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </td>
+                    <td>${user.hourlyRate}</td>
+                    <td>${user.availability}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-approve" onclick="approveUser(${user.id})">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn-reject" onclick="rejectUser(${user.id})">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Render Demand Clients Table
+        function renderDemandClients() {
+            const tbody = document.querySelector('#demandTable tbody');
+            tbody.innerHTML = '';
+
+            demandClients.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="user-info" onclick="viewClientProfile(${client.id})" style="cursor: pointer;">
+                            <div class="user-avatar">${client.initials}</div>
+                            <div class="user-details">
+                                <span class="user-name">${client.name}</span>
+                                <span class="user-email">Client</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><strong>${client.projectsPosted}</strong> projects</td>
+                    <td><strong>${client.proposalsReceived}</strong> proposals</td>
+                    <td>
+                        <span class="badge ${client.demandStatus === 'high' ? 'high' : 'low'}">
+                            ${client.demandStatus === 'high' ? '🔥 High Demand' : '📉 Low Demand'}
+                        </span>
+                    </td>
+                    <td>${client.avgBudget}</td>
+                    <td>
+                        <button class="btn-view" onclick="viewClientProfile(${client.id})">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Filter users by role
+        function filterUsers(role) {
+            renderUnverifiedUsers(role);
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Approve user
+        function approveUser(userId) {
+            if(confirm('Approve this user for verification?')) {
+                alert(`User ${userId} approved! (Demo - no actual change)`);
+                // In real app: API call to backend
+            }
+        }
+
+        // Reject user
+        function rejectUser(userId) {
+            if(confirm('Reject this user verification?')) {
+                alert(`User ${userId} rejected! (Demo - no actual change)`);
+                // In real app: API call to backend
+            }
+        }
+
+        // View profile (opens modal)
+        function viewProfile(userId) {
+            const user = unverifiedUsers.find(u => u.id === userId);
+            if(!user) return;
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="profile-detail-item">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value"><strong>${user.name}</strong></span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${user.email}</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Role:</span>
+                    <span class="detail-value">
+                        <span class="badge-role ${user.role === 'client' ? 'badge-client' : 'badge-freelancer'}">
+                            ${user.role === 'client' ? 'Client' : 'Freelancer'}
+                        </span>
+                    </span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Skills:</span>
+                    <span class="detail-value">
+                        <div class="skills">
+                            ${user.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Rate:</span>
+                    <span class="detail-value">${user.hourlyRate}/hour</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Availability:</span>
+                    <span class="detail-value">${user.availability}</span>
+                </div>
+                <div class="stats-mini">
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value">3</div>
+                        <div class="stat-mini-label">Projects</div>
+                    </div>
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value">12</div>
+                        <div class="stat-mini-label">Proposals</div>
+                    </div>
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value">4.8</div>
+                        <div class="stat-mini-label">Rating</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        // View client profile
+        function viewClientProfile(clientId) {
+            const client = demandClients.find(c => c.id === clientId);
+            if(!client) return;
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="profile-detail-item">
+                    <span class="detail-label">Company:</span>
+                    <span class="detail-value"><strong>${client.name}</strong></span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Type:</span>
+                    <span class="detail-value">
+                        <span class="badge-role badge-client">Client</span>
+                    </span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Projects:</span>
+                    <span class="detail-value">${client.projectsPosted} total posted</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Proposals:</span>
+                    <span class="detail-value">${client.proposalsReceived} received</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Avg Budget:</span>
+                    <span class="detail-value">${client.avgBudget}</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="detail-label">Demand:</span>
+                    <span class="detail-value">
+                        <span class="badge ${client.demandStatus === 'high' ? 'high' : 'low'}">
+                            ${client.demandStatus === 'high' ? 'High Demand' : 'Low Demand'}
+                        </span>
+                    </span>
+                </div>
+                <div class="stats-mini">
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value">${client.projectsPosted}</div>
+                        <div class="stat-mini-label">Projects</div>
+                    </div>
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value">${client.proposalsReceived}</div>
+                        <div class="stat-mini-label">Proposals</div>
+                    </div>
+                    <div class="stat-mini-item">
+                        <div class="stat-mini-value">85%</div>
+                        <div class="stat-mini-label">Hire Rate</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        // Show high demand clients
+        function showHighDemand() {
+            alert('Showing high-demand clients (those with 15+ proposals)\n\nTop clients: TechStart Inc, Creative Agency, Enterprise Corp');
+        }
+
+        // Show low demand clients
+        function showLowDemand() {
+            alert('Showing low-demand clients (0-2 proposals)\n\nClients needing attention: Local Business Co, New Business, Startup Venture');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('profileModal');
+            if(event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize tables
+        renderUnverifiedUsers();
+        renderDemandClients();
+    </script>
+</body>
+</html>
